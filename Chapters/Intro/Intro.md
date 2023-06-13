@@ -2,7 +2,7 @@
 
 Chest allows you to store objects from anywhere, to keep them around to check equality...   
 
-![image](https://user-images.githubusercontent.com/97704417/228243015-b21be643-bad9-400d-bd7f-16a0ed883e05.png)
+![Chest overview](./figures/chest-overview.png)
   
 ### Original repository
 
@@ -19,19 +19,24 @@ Metacello new
 ### Open Chest
 Chest is available in the **world menu** of Pharo. It is available as an **entry of the Debug menu**
 
-![image](https://user-images.githubusercontent.com/97704417/228243739-5443fe28-a523-4161-b073-69fd385140ca.png)
+![Chest in debug menu](./figures/chest-debug-menu.png)
 
 You can also enable it as a debugger extension in the debugging settings of Pharo:
 
-![image](https://user-images.githubusercontent.com/97704417/228244402-9a7effee-b901-4543-87b8-a3eea20fc1cc.png)
+![Chest debugger extension in the Pharo settings](./figures/chest-extension-in-settings.png)
 
 In the debugger, Chest will provide a view as a tree of all chests with the objects inside.
 
+> Maybe we need an image of the tree view here?
+
 ### More Details
+
 #### Name (= ID)
+
 Each Chest instance has an ID (String). These IDs are unique. Two chests cannot have the same ID.
 
 #### Default Chest
+
 This is an instance of Chest that can be interacted with in the same way as any other Chest by sending the messages to the `Chest` class.
 
 #### Weak Chests
@@ -50,40 +55,40 @@ is a way to access the class `WeakChest`. This class can be interacted with the 
 
 If you right-click on a code presenter with an `SpCodeInteractionModel` or `StDebuggerContextInteractionModel` (e.g: playground, debugger etc.), you can evaluate an expression and store the result in the chest of your choice, with the name of your choice:
 
-![image](https://user-images.githubusercontent.com/97704417/228267430-558412c9-73b3-417a-9a50-0810437ec72a.png)
+![Store object context menu, inside the debugger](./figures/chest-store-object-context-menu.png)
 
-![image](https://user-images.githubusercontent.com/97704417/228250744-b3a99ae2-08dc-4a27-ad1f-30316e73bd4c.png)
+![Store object popup](./figures/chest-store-object-popup.png)
 
-![image](https://user-images.githubusercontent.com/97704417/228251045-edbc8719-1baf-446e-b035-749052695d23.png)
+![Chest tree view inside the debugger, after having stored an object](./figures/chest-tree-view-after-store.png)
 
 ##### Load object from a chest into a playground or a debugger
 
 It's also possible to load objects from a chest into these code presenters:
 
-![image](https://user-images.githubusercontent.com/97704417/228252058-573881bc-e958-44f6-824d-a8534cde8b66.png)
+![Load object context menu, inside the debugger](./figures/chest-load-context-menu.png)
 
-![image](https://user-images.githubusercontent.com/97704417/228253181-e879c693-866c-40e8-9029-04f3993edbda.png)
+![Load object popup](./figures/chest-load-object-popup.png)
 
-![image](https://user-images.githubusercontent.com/97704417/228252806-71812ae7-db24-482f-9042-8ac7c56ec244.png)
+![Usage of the Chest variable inside the debugger, after having loaded the object](./figures/chest-variable-usage-after-load.png)
 
 And then variables can be seen from any other context if it has been loaded in a debugger and these variables can be seen in the debugger inspector:
 
-![image](https://user-images.githubusercontent.com/97704417/228253546-f3a704df-7433-4d17-8639-7018e8dffe86.png)
+![Chest variable, in the debugger inspector](./figures/chest-variable-in-debugger-inspector.png)
 
 Chest, as a debugger extension, provides a playground. All bindings between this playground and the debugger selected context are shared. So: all variables defined in this playground are recognized by the debugger and all variables from the debugger's selected context or loaded from Chest into the debugger are recognized by the playground. However, only the variables loaded from Chest (via the load menu entry described above) are displayed in the debugger inspector:
 
-![image](https://user-images.githubusercontent.com/97704417/228256416-cbe81844-6000-46d1-b7d3-c552db757de2.png)
+![Variable from Chest playground, not visible in the debugger inspector](./figures/variable-from-chest-playground-are-not-visible-in-debugger-inspector.png)
 
 ##### Inject code to access an object inside a chest, in a playground or in the debugger
 
 To make it easier to access the content of a chest in a playground or in the debugger, it is possible to use the **Paste object from chest >** sub-menu.
 This sub-menu allows to choose a chest and the key of an object inside the chest.
 
-![image](https://user-images.githubusercontent.com/97704417/228263021-d57cd7aa-8dc4-4a92-b826-afbd33dd4d63.png)
+![Paste object from Chest context menu](./figures/chest-paste-object-from-chest-context-menu.png)
 
 When clicking on a variable name, the necessary code to access the corresponding object is pasted where you had put your cursor in the playground/debugger:
 
-![image](https://user-images.githubusercontent.com/97704417/228264414-98015cb8-6508-48f4-9035-28184fa60155.png)
+![Injected code for Chest, after having pasted the object](./figures/chest-injected-code-after-paste.png)
 
 This command allows you to access objects from a chest, without relying on your memory of the `Chest` API.
 
@@ -97,17 +102,17 @@ That's why it is possible to copy / paste (=inject code to access) to / from a "
 
 To do that, you just need to select the expression that you want to evaluate and whose results should be stored in the "Clipboard Chest", and then select **Copy object in a clipboard chest** in the context menu:
 
-![image](https://user-images.githubusercontent.com/97704417/233565153-aa00a719-c48c-4710-885e-2a72148586cd.png)
+![Copy object to Chest Clipboard context menu](./figures/chest-copy-object-to-clipboard-context-menu.png)
 
 This will store the result of the expression into the default clipboard chest. Please note, that if you "copy" another object to the clipboard chest, it will replace the previous copied object. Note also that the clipboard chest is a weak chest, so your object inside the clipboard chest can become `nil` if it gets garbage-collected.
 
 In order to inject the code to access the object, you should then select in the context menu: **Paste last object copied to clipboard**:
 
-![image](https://user-images.githubusercontent.com/97704417/233566222-4244847a-29db-4ccb-aa64-8bbd988cdccb.png)
+![Paste last object from Chest Clipboard context menu](./figures/chest-paste-last-object-from-clipboard-context-menu.png)
 
 And the code to access your object is now pasted:
 
-![image](https://user-images.githubusercontent.com/97704417/233566504-3f78e1da-2482-4428-91d6-09896b7106b8.png)
+![Injected code for Chest, after having pasted the object from Chest Clipboard](./figures/chest-injected-code-after-paste-from-clipboard.png)
 
 #### API
 
@@ -157,7 +162,8 @@ The 6 messages above can be sent to `Chest class` unlike the ones below:
 
 - `Chest class>>#weak` : returns `WeakChest class`. You can use the same API on this class as you would on `Chest class`, in order to create or access chests that hold weak references to objects.
 
-###### How to create instances 
+###### How to create instances
+
 - `Chest class>>#new` : creates a chest with a default name that is in the form of 'Chest_autoIncrementedNumber'
 
 - `Chest class>>#newNamed:` : creates a chest with the name given in parameter if no other chest is already named so, else `ChestKeyAlreadyInUseError`
