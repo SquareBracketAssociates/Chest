@@ -4,32 +4,46 @@ In this chapter, we detail the API of Chest and give examples of its usage.
 
 ### Chest class-side API
 
-- `Chest class>>#allChests` : gives an ordered collection that contains all chests
+In this section, we describe the API that can be used on the class `Chest`.
 
-- `Chest class>>#chestDictionary` : gives all chests with their names as a dictionary
-
-- `Chest class>>#named:` : gives the chest that is named as the string in argument
-
-- `Chest class>>#defaultInstance` ( or `Chest class>>#default`) : gives the default chest that is used when you use `Chest` API on `Chest class`
-
-- `Chest class>>#inChest:at:put:` : puts an object with a given name in a chest of a given name that is created it it doesn;t exist yet.
-
-- `Chest class>>#announcer` : helper that gives the unique instance of `ChestAnnouncer`
-
-- `Chest class>>#unsubscribe:` : helper that unsubscribes its argument from the unique instance of `ChestAnnouncer`
-
-- `Chest class>>#weak` : returns `WeakChest class`. You can use the same API on this class as you would on `Chest class`, in order to create or access chests that hold weak references to objects.
-
-### Chest instance-side API
-
-###### How to create instances
+#### How to create instances
 
 - `Chest class>>#new` : creates a chest with a default name that is in the form of 'Chest_autoIncrementedNumber'
 
 - `Chest class>>#newNamed:` : creates a chest with the name given in parameter if no other chest is already named so, else `ChestKeyAlreadyInUseError`
 
-- `Chest>>#add:` 
+#### Accessors
 
+- `Chest class>>#allChests` 
+	returns an ordered collection that contains all chest instances.
+
+- `Chest class>>#chestDictionary` 
+	returns all chests with their names as a dictionary.
+
+- `Chest class>>#named:`
+	returns the chest that is named as the string in argument.
+
+- `Chest class>>#defaultInstance` ( or `Chest class>>#default`).
+	You can use most of Chest's instance-side API on the class `Chest` itself. This method returns the default chest that is used when you use `Chest`'s instance-side API directly on `Chest class`.
+
+- `Chest class>>#announcer`
+	helper method that returns the unique instance of `ChestAnnouncer`, which propagates changes in chests to any subscriber.
+
+- `Chest class>>#weak`
+	returns the class `WeakChest`, subclassof `Chest`. You can use the same API on this class as you would on `Chest class`, in order to create or access chests that hold weak references to objects.
+
+#### How to perform actions
+
+- `Chest class>>#inChest:at:put:`
+	puts the object in third argument with the name given in second argument in a chest named as first argument. This chest is created if it doesn't exist yet.
+
+- `Chest class>>#unsubscribe:`
+	helper method that unsubscribes its argument from the unique instance of `ChestAnnouncer`.
+
+
+### Chest instance-side API
+
+- `Chest>>#add:` 
 	adds the object in argument to the  receiver chest, with a default name that is in the form of `chestName_autoIncrementedNumber`
 
 - `Chest>>#at: ` : gives the object in the chest whose name is the string in argument if it exists, else `KeyNotFound`
