@@ -38,20 +38,67 @@ In this section, we describe the API that can be used on the class `Chest`.
 - `Chest class>>#allChests` 
 	returns an ordered collection that contains all chest instances.
 
+	If we suppose that there are no other chests than the ones created above, the piece of code returns a collection with two chests: the default chest and the chest named "toto":
+
+	```smalltalk
+	Chest allChests "{DefaultChest. totoChest}"
+	```
+
 - `Chest class>>#chestDictionary` 
-	returns all chests with their names as a dictionary.
+	returns a dictionary containing all chests with their name as key.
+
+	If we suppose that there are no other chests than the ones created above, the piece of code returns a dictionary with two chests: the default chest, with 'Default' as a key, and the chest named "toto", with 'toto' as a key:
+
+	```smalltalk
+	Chest chestDictionary "{'Default' -> DefaultChest. 'toto' -> totoChest}"
+	```
 
 - `Chest class>>#named:`
-	returns the chest that is named as the string in argument.
+	returns the chest that is named as the string in argument if it exists, else raises an exception `KeyNotFound`.
+
+	The expression below can be used to get the chest named 'toto', if it exists:
+
+	```smalltalk
+	Chest named: 'toto' "chest named 'toto'"
+	```
+
+	However, no chest is named 'titi', the expression below would raise a `KeyNotFound`:
+
+	```smalltalk
+	Chest named: 'titi' "KeyNotFound"
+	```
 
 - `Chest class>>#defaultInstance` ( or `Chest class>>#default`).
-	You can use most of Chest's instance-side API on the class `Chest` itself. This method returns the default chest that is used when you use `Chest`'s instance-side API directly on `Chest class`.
+	You can use most of Chest's instance-side API on the class `Chest` itself. These methods returns the default chest that is used when you use `Chest`'s instance-side API directly on `Chest class`.
+	If the default chest doesn't already exist, calling these methods lazily create it.
+
+	For example, the expression below returns `true`:
+
+	```smalltalk
+	Chest defaultInstance == Chest default "true"
+	 ```
 
 - `Chest class>>#announcer`
-	helper method that returns the unique instance of `ChestAnnouncer`, which propagates changes in chests to any subscriber.
+	helper method that returns the unique instance of `ChestAnnouncer`, which propagates changes related to chests to any subscriber.
+
+	The example belows subscribes `self` to the `ChestAnnouncer` singleton to 3 different events; when a new chest chest has been created, when the content of a chest has changed and when a chest has been removed:
+
+	```smalltalk
+	Chest announcer weak when: ChestCreated send: #eventNewChest: to: self;
+						 when: ChestUpdated send: #eventContentOfChestUpdated: to: self.
+						 when: ChestRemoved send: #eventChestRemoved: to: self.
+	```
+
+	When the event happens, the methods that are called (in the example: `#eventNewChest:`, `#eventContentOfChestUpdated:` and `#eventChestRemoved:`) take the related event as an argument.
 
 - `Chest class>>#weak`
-	returns the class `WeakChest`, subclassof `Chest`. You can use the same API on this class as you would on `Chest class`, in order to create or access chests that hold weak references to objects.
+	returns the class `WeakChest`, subclass of `Chest`. You can use the same API on this class as you would on `Chest class`, in order to create or access chests that hold weak references to objects. This means, that storing your objects in a weak chest doesn't prevent them from being garbage-collected.
+
+	For example, the expression below creates a new weak chest named as "wtiti", if it doesn't already exist:
+
+	```smalltalk
+	Chest weak newNamed: 'wtiti' "weak chest named as 'wttiti'"
+	```
 
 #### How to perform actions
 
@@ -94,8 +141,6 @@ The 6 messages above can be sent to `Chest class` unlike the ones below:
 #### Example
 
 ```smalltalk
-	Chest newNamed: 'toto'. "its name is 'toto'"
-	Chest newNamed: 'toto'. "ChestKeyAlreadyInUseError as a chest named 'toto' already exists"
 	
 	(Chest named: 'toto') add: 42.
 	"42 has the key 'toto_1' in the chest named 'toto'"
