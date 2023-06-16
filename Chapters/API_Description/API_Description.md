@@ -136,14 +136,56 @@ Chest unsubscribe: self
 
 ### Chest instance-side API
 
+In this section, we describe the API that can be used on an instance of `Chest`. Part of this API can also be used on the class `Chest` itself. In this case, it is equivalent to using the API on the default instance of `Chest`. 
+
+#### Accessors
+
+- `Chest>>#name`: 
+
+returns the receiver chest's name.
+
+For example, the expression below evaluates to `true`:
+
+```smalltalk
+(Chest named: 'toto') name = 'toto' "true"
+```
+
+- `Chest>>#contents`: 
+
+returns a copy of the receiver chest's contents, as a dictionary that contains all objects in the chest with their name as key.
+
+For example, evaluating the piece of code below returns a dictionary that associates 42 to "toto" and 144 to "titi":
+
+```smalltalk
+| c |
+c := Chest new.
+Chest inChest: c name at: 'toto' put: 42.
+Chest inChest: c name at: 'titi' put: 144.
+c contents "{'toto' -> 42. 'titi' -> 144}"
+```
+
+- `Chest>>#at: `: 
+
+returns the object, contained in the receiver chest, whose name is the string in argument if it exists, else an exception `KeyNotFound` is raised.
+
+For example, if the chest named as "toto" stores 42 as "titi", then the expression below returns 42:
+
+```smalltalk
+(Chest named: 'toto') at: 'titi'. "42"
+```
+
+On the contrary, if no object is named as "titi" in the chest named as "toto", then the same expression raises a `KeyNotFound`:
+
+```smalltalk
+(Chest named: 'toto') at: 'titi' "KeyNotFound"
+```
+
+#### How to perform actions
+
 - `Chest>>#add:` 
 	adds the object in argument to the  receiver chest, with a default name that is in the form of `chestName_autoIncrementedNumber`
 
-- `Chest>>#at: ` : gives the object in the chest whose name is the string in argument if it exists, else `KeyNotFound`
-
 - `Chest>>#at:put:` : adds the object in second argument to the chest with the name in first argument if no other object is already named so, else `ChestKeyAlreadyInUseError`
-
-- `Chest>>#contents` : gives a copy of a chest's contents as a dictionary
 
 - `Chest>>#remove:` : removes the object in argument from a chest if it is there, else `KeyNotFound`
 
@@ -155,7 +197,6 @@ The 6 messages above can be sent to `Chest class` unlike the ones below:
 
 - `Chest>>#remove` : completely deletes this chest
 
-- `Chest>>#name` : gives this chest's name
 
 - `Chest>>#name:` : renames this chest as the string in argument if no other chest is already named so, else `ChestKeyAlreadyInUseError`
 
