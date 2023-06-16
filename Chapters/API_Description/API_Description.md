@@ -9,119 +9,129 @@ In this section, we describe the API that can be used on the class `Chest`.
 #### How to create instances
 
 - `Chest class>>#new`
-	creates a chest with a default name that is in the form of `Chest_autoIncrementedNumber`.
 
-	In the examples below, if no other chest has been created before, the names of the created chests are respectively "Chest_1" and "Chest_2": 
+creates a chest with a default name that is in the form of `Chest_autoIncrementedNumber`.
 
-	```smalltalk
-	Chest new. "Chest_1"
-	Chest new. "Chest_2"
-	```
+In the examples below, if no other chest has been created before, the names of the created chests are respectively "Chest_1" and "Chest_2": 
+
+```smalltalk
+Chest new. "Chest_1"
+Chest new. "Chest_2"
+```
 
 - `Chest class>>#newNamed:`
-	creates a chest with the name given in parameter if no other chest is already named so, else an exception `ChestKeyAlreadyInUseError` is raised.
 
-	For example, if no other chest is already called "toto", the piece of code below creates a chest that is named as "toto":
+creates a chest with the name given in parameter if no other chest is already named so, else an exception `ChestKeyAlreadyInUseError` is raised.
 
-	```smalltalk
-	Chest newNamed: 'toto'. "its name is 'toto'"
-	```
+For example, if no other chest is already called "toto", the piece of code below creates a chest that is named as "toto":
 
-	On the contrary, if another chest is already called "toto", the same piece of code would raise a `ChestKeyAlreadyInUseError` because two chests cannot have the same name:
+```smalltalk
+Chest newNamed: 'toto'. "its name is 'toto'"
+```
 
-	```smalltalk
-	Chest newNamed: 'toto'. "ChestKeyAlreadyInUseError as a chest named 'toto' already exists"
-	```
+On the contrary, if another chest is already called "toto", the same piece of code would raise a `ChestKeyAlreadyInUseError` because two chests cannot have the same name:
+
+```smalltalk
+Chest newNamed: 'toto'. "ChestKeyAlreadyInUseError as a chest named 'toto' already exists"
+```
 
 #### Accessors
 
-- `Chest class>>#allChests` 
-	returns an ordered collection that contains all chest instances.
+- `Chest class>>#allChests`
 
-	If we suppose that there are no other chests than the ones created above, the piece of code returns a collection with two chests: the default chest and the chest named "toto":
+returns an ordered collection that contains all chest instances.
 
-	```smalltalk
-	Chest allChests "{DefaultChest. totoChest}"
-	```
+If we suppose that there are no other chests than the ones created above, the piece of code returns a collection with two chests: the default chest and the chest named "toto":
 
-- `Chest class>>#chestDictionary` 
-	returns a dictionary containing all chests with their name as key.
+```smalltalk
+Chest allChests "{DefaultChest. totoChest}"
+```
 
-	If we suppose that there are no other chests than the ones created above, the piece of code returns a dictionary with two chests: the default chest, with 'Default' as a key, and the chest named "toto", with 'toto' as a key:
+- `Chest class>>#chestDictionary`
 
-	```smalltalk
-	Chest chestDictionary "{'Default' -> DefaultChest. 'toto' -> totoChest}"
-	```
+returns a dictionary containing all chests with their name as key.
+
+If we suppose that there are no other chests than the ones created above, the piece of code returns a dictionary with two chests: the default chest, with 'Default' as a key, and the chest named "toto", with 'toto' as a key:
+
+```smalltalk
+Chest chestDictionary "{'Default' -> DefaultChest. 'toto' -> totoChest}"
+```
 
 - `Chest class>>#named:`
-	returns the chest that is named as the string in argument if it exists, else raises an exception `KeyNotFound`.
 
-	The expression below can be used to get the chest named 'toto', if it exists:
+returns the chest that is named as the string in argument if it exists, else raises an exception `KeyNotFound`.
 
-	```smalltalk
-	Chest named: 'toto' "chest named 'toto'"
-	```
+The expression below can be used to get the chest named 'toto', if it exists:
 
-	However, no chest is named 'titi', the expression below would raise a `KeyNotFound`:
+```smalltalk
+Chest named: 'toto' "chest named 'toto'"
+```
 
-	```smalltalk
-	Chest named: 'titi' "KeyNotFound"
-	```
+However, no chest is named 'titi', the expression below would raise a `KeyNotFound`:
+
+```smalltalk
+Chest named: 'titi' "KeyNotFound"
+```
 
 - `Chest class>>#defaultInstance` ( or `Chest class>>#default`).
-	You can use most of Chest's instance-side API on the class `Chest` itself. These methods returns the default chest that is used when you use `Chest`'s instance-side API directly on `Chest class`.
-	If the default chest doesn't already exist, calling these methods lazily create it.
 
-	For example, the expression below returns `true`:
+You can use most of Chest's instance-side API on the class `Chest` itself. These methods returns the default chest that is used when you use `Chest`'s instance-side API directly on `Chest class`.
+If the default chest doesn't already exist, calling these methods lazily create it.
 
-	```smalltalk
-	Chest defaultInstance == Chest default "true"
-	 ```
+For example, the expression below returns `true`:
+
+```smalltalk
+Chest defaultInstance == Chest default "true"
+ ```
 
 - `Chest class>>#announcer`
-	helper method that returns the unique instance of `ChestAnnouncer`, which propagates changes related to chests to any subscriber.
 
-	The example belows subscribes `self` to the `ChestAnnouncer` singleton to 3 different events; when a new chest chest has been created, when the content of a chest has changed and when a chest has been removed:
+helper method that returns the unique instance of `ChestAnnouncer`, which propagates changes related to chests to any subscriber.
 
-	```smalltalk
-	Chest announcer weak when: ChestCreated send: #eventNewChest: to: self;
-						 when: ChestUpdated send: #eventContentOfChestUpdated: to: self.
-						 when: ChestRemoved send: #eventChestRemoved: to: self.
-	```
+The example belows subscribes `self` to the `ChestAnnouncer` singleton to 3 different events; when a new chest chest has been created, when the content of a chest has changed and when a chest has been removed:
 
-	When the event happens, the methods that are called (in the example: `#eventNewChest:`, `#eventContentOfChestUpdated:` and `#eventChestRemoved:`) take the related event as an argument.
+```smalltalk
+Chest announcer weak when: ChestCreated send: #eventNewChest: to: self;
+						when: ChestUpdated send: #eventContentOfChestUpdated: to: self.
+						when: ChestRemoved send: #eventChestRemoved: to: self.
+```
+
+When the event happens, the methods that are called (in the example: `#eventNewChest:`, `#eventContentOfChestUpdated:` and `#eventChestRemoved:`) take the related event as an argument.
 
 - `Chest class>>#weak`
-	returns the class `WeakChest`, subclass of `Chest`. You can use the same API on this class as you would on `Chest class`, in order to create or access chests that hold weak references to objects. This means, that storing your objects in a weak chest doesn't prevent them from being garbage-collected.
 
-	For example, the expression below creates a new weak chest named as "wtiti", if it doesn't already exist:
+returns the class `WeakChest`, subclass of `Chest`. You can use the same API on this class as you would on `Chest class`, in order to create or access chests that hold weak references to objects. This means, that storing your objects in a weak chest doesn't prevent them from being garbage-collected.
 
-	```smalltalk
-	Chest weak newNamed: 'wtiti' "weak chest named as 'wttiti'"
-	```
+For example, the expression below creates a new weak chest named as "wtiti", if it doesn't already exist:
+
+```smalltalk
+Chest weak newNamed: 'wtiti' "weak chest named as 'wttiti'"
+```
 
 #### How to perform actions
 
 - `Chest class>>#inChest:at:put:`
-	puts the object in third argument with the name given in second argument in the chest named as first argument. This chest is lazily created if it doesn't exist yet.
 
-	In the example below, the object 42 is stored as "toto" in the chest named "toto":
+puts the object in third argument with the name given in second argument in the chest named as first argument. This chest is lazily created if it doesn't exist yet.
 
-	```smalltalk
-	(Chest named: 'toto') at: 'toto' put: 42. "stores 42 as 'toto' in chest named as 'toto'.
-	```
+In the example below, the object 42 is stored as "toto" in the chest named "toto":
 
-	If the chest "toto" didn't exist, it would be created automatically.
-	Also, please note that a chest cannot contain the same object twice. So, if the chest named as "toto" already contained the object 42, it would simply be renamed as "toto" in this chest.
+```smalltalk
+(Chest named: 'toto') at: 'toto' put: 42. "stores 42 as 'toto' in chest named as 'toto'.
+```
+
+If the chest "toto" didn't exist, it would be created automatically.
+Also, please note that a chest cannot contain the same object twice. So, if the chest named as "toto" already contained the object 42, it would simply be renamed as "toto" in this chest.
 
 - `Chest class>>#unsubscribe:`
-	helper method that unsubscribes its argument from the unique instance of `ChestAnnouncer`.
 
-	For example, the expression below unsubscribes `self` from the `ChestAnnouncer` singleton:
+helper method that unsubscribes its argument from the unique instance of `ChestAnnouncer`.
 
-	```smalltalk
-	Chest unsubscribe: self
-	```
+For example, the expression below unsubscribes `self` from the `ChestAnnouncer` singleton:
+
+```smalltalk
+Chest unsubscribe: self
+```
 
 
 ### Chest instance-side API
