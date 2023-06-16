@@ -1,6 +1,6 @@
 ## API Description
 
-In this chapter, we detail the API of Chest and give examples of its usage.
+In this chapter, we detail the API of Chest and give examples of its usage. 
 
 ### Chest class-side API
 
@@ -8,9 +8,30 @@ In this section, we describe the API that can be used on the class `Chest`.
 
 #### How to create instances
 
-- `Chest class>>#new` : creates a chest with a default name that is in the form of 'Chest_autoIncrementedNumber'
+- `Chest class>>#new`
+	creates a chest with a default name that is in the form of `Chest_autoIncrementedNumber`.
 
-- `Chest class>>#newNamed:` : creates a chest with the name given in parameter if no other chest is already named so, else `ChestKeyAlreadyInUseError`
+	In the examples below, if no other chest has been created before, the names of the created chests are respectively "Chest_1" and "Chest_2": 
+
+	```smalltalk
+	Chest new. "Chest_1"
+	Chest new. "Chest_2"
+	```
+
+- `Chest class>>#newNamed:`
+	creates a chest with the name given in parameter if no other chest is already named so, else an exception `ChestKeyAlreadyInUseError` is raised.
+
+	For example, if no other chest is already called "toto", the piece of code below creates a chest that is named as "toto":
+
+	```smalltalk
+	Chest newNamed: 'toto'. "its name is 'toto'"
+	```
+
+	On the contrary, if another chest is already called "toto", the same piece of code would raise a `ChestKeyAlreadyInUseError` because two chests cannot have the same name:
+
+	```smalltalk
+	Chest newNamed: 'toto'. "ChestKeyAlreadyInUseError as a chest named 'toto' already exists"
+	```
 
 #### Accessors
 
@@ -73,8 +94,6 @@ The 6 messages above can be sent to `Chest class` unlike the ones below:
 #### Example
 
 ```smalltalk
-	Chest new. "its name is 'Chest_1' if no other chest have been created before"
-	Chest new. "its name is 'Chest_2' if no other chest have been created before"
 	Chest newNamed: 'toto'. "its name is 'toto'"
 	Chest newNamed: 'toto'. "ChestKeyAlreadyInUseError as a chest named 'toto' already exists"
 	
