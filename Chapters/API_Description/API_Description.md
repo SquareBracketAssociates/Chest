@@ -103,10 +103,25 @@ In this section, we describe the API that can be used on the class `Chest`.
 #### How to perform actions
 
 - `Chest class>>#inChest:at:put:`
-	puts the object in third argument with the name given in second argument in a chest named as first argument. This chest is created if it doesn't exist yet.
+	puts the object in third argument with the name given in second argument in the chest named as first argument. This chest is lazily created if it doesn't exist yet.
+
+	In the example below, the object 42 is stored as "toto" in the chest named "toto":
+
+	```smalltalk
+	(Chest named: 'toto') at: 'toto' put: 42. "stores 42 as 'toto' in chest named as 'toto'.
+	```
+
+	If the chest "toto" didn't exist, it would be created automatically.
+	Also, please note that a chest cannot contain the same object twice. So, if the chest named as "toto" already contained the object 42, it would simply be renamed as "toto" in this chest.
 
 - `Chest class>>#unsubscribe:`
 	helper method that unsubscribes its argument from the unique instance of `ChestAnnouncer`.
+
+	For example, the expression below unsubscribes `self` from the `ChestAnnouncer` singleton:
+
+	```smalltalk
+	Chest unsubscribe: self
+	```
 
 
 ### Chest instance-side API
