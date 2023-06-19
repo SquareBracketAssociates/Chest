@@ -121,7 +121,7 @@ In the example below, the object 42 is stored as "toto" in the chest named "toto
 ```
 
 If the chest "toto" didn't exist, it would be created automatically.
-Also, please note that a chest cannot contain the same object twice. So, if the chest named as "toto" already contained the object 42, it would simply be renamed as "toto" in this chest.
+*Also, please note that a chest cannot contain the same object twice. So, if the chest named as "toto" already contained the object 42, it would simply be renamed as "toto" in this chest.*
 
 - `Chest class>>#unsubscribe:`
 
@@ -136,7 +136,7 @@ Chest unsubscribe: self
 
 ### Chest instance-side API
 
-In this section, we describe the API that can be used on an instance of `Chest`. Part of this API can also be used on the class `Chest` itself. In this case, it is equivalent to using the API on the default instance of `Chest`. 
+In this section, we describe the API that can be used on an instance of `Chest`. Methods marked by the symbol `(*)` can also be used on the class `Chest` itself. In this case, it is equivalent to using the API on the default instance of `Chest`. 
 
 #### Accessors
 
@@ -150,7 +150,7 @@ For example, the expression below evaluates to `true`:
 (Chest named: 'toto') name = 'toto' "true"
 ```
 
-- `Chest>>#contents`: 
+- `Chest>>#contents`: (*)
 
 returns a copy of the receiver chest's contents, as a dictionary that contains all objects in the chest with their name as key.
 
@@ -164,7 +164,7 @@ Chest inChest: c name at: 'titi' put: 144.
 c contents "{'toto' -> 42. 'titi' -> 144}"
 ```
 
-- `Chest>>#at: `: 
+- `Chest>>#at: `: (*)
 
 returns the object, contained in the receiver chest, whose name is the string in argument if it exists, else an exception `KeyNotFound` is raised.
 
@@ -182,21 +182,86 @@ On the contrary, if no object is named as "titi" in the chest named as "toto", t
 
 #### How to perform actions
 
-- `Chest>>#add:` 
-	adds the object in argument to the  receiver chest, with a default name that is in the form of `chestName_autoIncrementedNumber`
+- `Chest>>#add:` (*)
 
-- `Chest>>#at:put:` : adds the object in second argument to the chest with the name in first argument if no other object is already named so, else `ChestKeyAlreadyInUseError`
+adds the object in argument to the receiver chest, with a default name that is in the form of `chestName_autoIncrementedNumber`.
 
-- `Chest>>#remove:` : removes the object in argument from a chest if it is there, else `KeyNotFound`
+In the piece of code below, we add 42 then 144 to a new chest named "MyChest". Thus, 42 is stored with the key "MyChest_1" and 144 is stored with the key "MyChest_2":
 
-- `Chest>>#removeObjectNamed:` : removes the object whose name is in argument if it is there, else `ObjectNotInChestError`
+```smalltalk
+| c |
+c := Chest newNamed: 'MyChest'.
+c add: 42. "MyChest_1 -> 42"
+c add: 144 "MyChest_2 -> 144"
+```
 
-The 6 messages above can be sent to `Chest class` unlike the ones below:
+- `Chest>>#at:put:` (*) 
+
+adds the object in second argument to the receiver chest with the name in first argument if no other object is already named so, else an exception `ChestKeyAlreadyInUseError` is raised.
+
+In the example below, in a new chest, 42 is stored as "toto". Then, trying to store 144 as "toto" raises a `ChestKeyAlreadyInUseError` because two objects cannot have the same name:
+
+```smalltalk
+| c |
+c := Chest new.
+c at: 'toto' put: 42. "toto -> 42"
+c at: 'toto' put: 144 "ChestKeyAlreadyInUseError"
+```
+
+*Also, please note that a chest cannot contain the same object twice. So, if the chest named as "toto" already contained the object 42, it would simply be renamed as "toto" in this chest.*
+
+- `Chest>>#at:put:ifPresent:` (*)
+
+adds the object in second argument to the receiver chest with the name in first argument if no other object is already named so, else the block in third argument is evaluated with zero argument.
+
+In the exemple below, in a new chest, 42 is stored as "toto". Then, we try to store 144 as "toto" and if the key is already use, we try to store it as "titi" instead. As the key "toto" is already used by 42, 144 is stored as "titi":
+
+```smalltalk
+| c |
+c := Chest new.
+c at: 'toto' put: 42 ifPresent: [Chest at: 'titi' put: 42]. "toto -> 42"
+c at: 'toto' put: 144 ifPresent: [ Chest at: 'titi' put: 144 ] "titi -> 144"
+```
+
+- `Chest>>#remove:` (*) 
+
+removes the object in argument from the receiver chest if it is there, else an exception `KeyNotFound` is raised.
+
+For example, if the chest named "toto" contains the object 42, then the following code snippet successfully removes 42 from this chest. Then it tries to remove 42 from this chest a second time, in which case a `KeyNotFound` is raised because the object is not there anymore:
+
+```smalltalk
+| c |
+c := Chest named: 'toto'.
+c contents includes: 42 "true"
+
+c remove: 42. "42 is removed from c"
+
+c contents includes: 42. "false"
+
+c remove: 42 "KeyNotFound"
+```
+
+- `Chest>>#removeObjectNamed:` (*) 
+
+removes from the receiver chest the object named as the argument if the key exists, else an exception `ObjectNotInChestError` is raised.
+
+For example, if the chest named "toto" stores an object named as "tata", then the following code snippet removes the object named as "tata" from this chest. Then it tries to remove a second time the object named as "tata" from this chest, in which case an `ObjectNotInChestError` is raised because the key isn't used anymore.
+
+```smalltalk
+| c |
+c := Chest named: 'toto'.
+c contents includesKey: 'tata' "true"
+
+c removeObjectNamed: 'tata'. "obj named 'tata' is removed from c"
+
+c contents includesKey: 'tata'. "false"
+
+c removeObjectNamed: 'tata' "KeyNotFound"
+```
 
 - `Chest>>#empty`: empties a chest.
 
 - `Chest>>#remove` : completely deletes this chest
-
 
 - `Chest>>#name:` : renames this chest as the string in argument if no other chest is already named so, else `ChestKeyAlreadyInUseError`
 
@@ -207,17 +272,6 @@ The 6 messages above can be sent to `Chest class` unlike the ones below:
 #### Example
 
 ```smalltalk
-	
-	(Chest named: 'toto') add: 42.
-	"42 has the key 'toto_1' in the chest named 'toto'"
-	
-	(Chest named: 'toto') at: 'toto' put: 42.
-	(Chest named: 'toto') at: 'toto'. "returns 42"
-	"42 has the key 'toto' and not 'toto_1' anymore as an object has a unique key in a chest."
-	
-	(Chest named: 'toto') at: 'toto' put: 72.
-	"72 is not put in the chest: a ChestKeyAlreadyInUseError is raised as 42 already has the key 'toto'"
-	
 	(Chest named: 'toto') renameObject: 42 into: 'tata' .
 	"42 has now the key 'tata' in the chest named 'toto'"
 	
