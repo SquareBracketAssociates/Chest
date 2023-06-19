@@ -82,7 +82,7 @@ For example, the expression below returns `true`:
 
 ```smalltalk
 Chest defaultInstance == Chest default "true"
- ```
+```
 
 - `Chest class>>#announcer`
 
