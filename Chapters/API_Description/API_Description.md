@@ -105,7 +105,7 @@ returns the class `WeakChest`, subclass of `Chest`. You can use the same API on 
 For example, the expression below creates a new weak chest named as "wtiti", if it doesn't already exist:
 
 ```smalltalk
-Chest weak newNamed: 'wtiti' "weak chest named as 'wttiti'"
+Chest weak newNamed: 'wtiti' "weak chest named as 'wtiti'"
 ```
 
 #### How to perform actions
@@ -256,57 +256,91 @@ c removeObjectNamed: 'tata'. "obj named 'tata' is removed from c"
 
 c contents includesKey: 'tata'. "false"
 
-c removeObjectNamed: 'tata' "KeyNotFound"
+c removeObjectNamed: 'tata' "ObjectNotInChestError"
 ```
 
-- `Chest>>#empty`: empties a chest.
+- `Chest>>#empty`: 
 
-- `Chest>>#remove` : completely deletes this chest
-
-- `Chest>>#name:` : renames this chest as the string in argument if no other chest is already named so, else `ChestKeyAlreadyInUseError`
-
-- `Chest>>#renameObject:into:` : renames the object (first argument) in a chest as the string in second argument; if the object is in the chest else `ObjectNotInChestError` and if no other object is already named so else `ChestKeyAlreadyInUseError`
-
-- `Chest>>#inspectAt` : inspect in a chest the object whose name is in argument
-
-#### Example
+removes the entire contents of the receiver chest:
 
 ```smalltalk
-	(Chest named: 'toto') renameObject: 42 into: 'tata' .
-	"42 has now the key 'tata' in the chest named 'toto'"
-	
-	(Chest named: 'toto') removeObjectNamed: 'tata'.
-	"42 is removed as it had the key 'tata'"
-	
-	(Chest named: 'toto') at: 'toto' put: 72.
-	(Chest named: 'toto') remove: 72. 
-	"72 is not in the chest anymore"
-	
-	(Chest named: 'toto') remove: 72. "KeyNotFound"
-	(Chest named: 'toto') renameObject: 72 into: 'toto'. "ObjectNotInChestError"
-	(Chest named: 'toto') removeObjectNamed: 'toto'. "ObjectNotInChestError"
-	
-	(Chest named: 'toto') 	at: 'toto' put: 42;
-									at: 'tata' put: 72;
-									renameObject: 42 into: 'tata'. "ChestKeyAlreadyInUseError"
-	
-	(Chest named: 'toto') contents at: 'tata' "returns 72"
-							
-	Chest defaultInstance	name: 'toto' "ChestKeyAlreadyInUseError"					
-	
-	(Chest named: 'toto') remove.
-	"deletes the chest named 'toto', and all objects inside"
-	
-	Chest named: 'toto'. "KeyNotFound"
-	Chest defaultInstance name: 'toto'. "the default chest is now named 'toto'"
-	
-	Chest defaultInstance remvove. "the default chest is still there as it can't be removed"
-	
-	Chest add: 42. "adds 42 to the default chest"
-	
-	Chest inChest: 'titi' at: 'tata' put: 42. "creates the chest named 'titi' as it doesn't exist, and put 42 in it with the name 'tata' "
-	
-	Chest inChest: 'titi' at: 'toto' put: 43. "puts 43 in the chest named 'titi' with the name 'toto'"
-	
-	Chest weak inChest: 'wtiti' at: 'tata' put: 42 "puts 42 in the weak chest named 'wtiti' with the name 'tata'"
+| c |
+c := Chest new.
+c at: 'toto' put: 42.
+c at: 'titi' put 144.
+
+c contents isEmpty. "false"
+
+c empty.
+
+c contentns isEmpty "true"
+```
+
+- `Chest>>#remove`
+
+completely deletes the receiver chest from the list of existing chests. It cannot be accessed afterwards:
+
+```smalltalk
+| c cname |
+c := Chest new.
+cname := c name.
+Chest chestDictionary includesKey: cname. "true"
+
+c remove.
+
+Chest chestDictionary includesKey: cname. "false"
+```
+
+- `Chest>>#name:` 
+
+renames the receiver chest as the string in argument if no other chest is already named so, else an exception `ChestKeyAlreadyInUseError` is raised.
+
+For example, if there exist only two chests named "toto" and "titi", then it is possible to rename "toto" into "tata" but not into "titi", in which case a `ChestKeyAlreadyInUseError` is raised:
+
+```smalltalk
+| toto titi |
+toto := Chest named: 'toto'.
+titi := Chest named: 'titi'.
+
+toto name: 'tata'.
+toto name "tata".
+
+toto name: 'titi'. "ChestKeyAlreadyInUseError"
+toto name "tata"
+```
+
+- `Chest>>#renameObject:into:`: 
+
+inside the receiver chest, renames the object in first argument into the string in second argument if the object is in the chest, else an exception `ObjectNotInChestError` is raised, and if no other object is already named so else an exception `ChestKeyAlreadyInUseError` is raised.
+
+If the chest named as "toto" contains only 42 as "titi" and 144 as "tata", then the piece of code below renames 42 to "tutu":
+
+```smalltalk
+(Chest named: 'toto') at: 'titi'. "42"
+(Chest named: 'toto') renameObject: 42 into: 'tutu'.
+(Chest named: 'toto') at: 'tutu'. "42"
+(Chest named: 'toto') at: 'titi' "KeyNotFound"
+```
+
+Under the same circumstances, the following code snippet raises an `ObjectNotInChestError` because it tries to rename 666 that is not in the chest named as "toto":
+
+```smalltalk
+(Chest named: 'toto) contents includes: 666 "false"
+(Chest named: 'toto') renameObject: 666 into 'anyValidName' "ObjectNotInChestError"
+```
+
+Finally, trying to rename 144 into "tutu" will raise a `ChestKeyAlreadyInUseError` because 42 is already named so:
+
+```smalltalk
+(Chest named: 'toto') renameObject: 144 into: 'tutu' "ChestKeyAlreadyInUseError"
+```
+
+- `Chest>>#inspectAt:`: 
+
+inspect the object named as the argument in the receiver chest:
+
+For example, the following expression opens an inspector on the object stored as "titi" in the chest named "toto":
+
+```smalltalk
+(Chest named: 'toto') inspectAt: 'titi'
 ```
