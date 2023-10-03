@@ -12,7 +12,7 @@
 %%%
 %%% Page layout
 %%%
-\justify
+
 \newcommand{\stockustrade}{\setstocksize{9in}{6in}}% Lulu final book proportions
 \newcommand{\stockaivus}{\setstocksize{11in}{210mm}}% intersection of A4 and US Letter
 \newcommand{\setbleed}[1]{%
@@ -215,6 +215,7 @@
 %%%
 %%% Page styles & folios
 %%%
+\justifying
 \def\headfootfont{\small\sffamily}
 %% main page style variant
 \makepagestyle{sba-headings}
